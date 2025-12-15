@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Study Planner</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 800px;
+            width: 100%;
+            padding: 40px;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            color: #667eea;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+            font-size: 1.1em;
+        }
+
+        input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.2em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .result {
+            margin-top: 30px;
+            display: none;
+        }
+
+        .result.show {
+            display: block;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        .exam-info {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .exam-info h2 {
+            margin-bottom: 10px;
+            font-size: 1.8em;
+        }
+
+        .days-remaining {
+            font-size: 2em;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .study-plan {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .study-plan h3 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+            text-align: center;
+        }
+
+        .day-card {
+            background: white;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
+        }
+
+        .day-card:hover {
+            transform: translateX(5px);
+        }
+
+        .day-card.rest-day {
+            border-left-color: #28a745;
+        }
+
+        .day-card.revision-day {
+            border-left-color: #ffc107;
+        }
+
+        .day-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .day-number {
+            font-weight: bold;
+            color: #667eea;
+            font-size: 1.2em;
+        }
+
+        .day-type {
+            background: #667eea;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.85em;
+        }
+
+        .day-type.rest {
+            background: #28a745;
+        }
+
+        .day-type.revision {
+            background: #ffc107;
+            color: #333;
+        }
+
+        .task-list {
+            list-style: none;
+            margin-left: 10px;
+        }
+
+        .task-list li {
+            padding: 8px 0;
+            color: #555;
+            border-bottom: 1px solid #eee;
+        }
+
+        .task-list li:last-child {
+            border-bottom: none;
+        }
+
+        .task-list li:before {
+            content: "✓ ";
+            color: #667eea;
+            font-weight: bold;
+            margin-right: 8px;
+        }
+
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #f5c6cb;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            .subtitle {
+                font-size: 1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📚 AI Study Planner</h1>
+        <p class="subtitle">Plan your exam preparation smartly with AI-generated study schedules</p>
+
+        <form id="studyForm">
+            <div class="form-group">
+                <label for="examName">Exam Name</label>
+                <input type="text" id="examName" placeholder="e.g., Mathematics Final Exam" required>
+            </div>
+
+            <div class="form-group">
+                <label for="examDate">Exam Date</label>
+                <input type="date" id="examDate" required>
+            </div>
+
+            <button type="submit">Generate Study Plan</button>
+        </form>
+
+        <div id="result" class="result"></div>
+    </div>
+
+    <script>
+        document.getElementById('studyForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const examName = document.getElementById('examName').value;
+            const examDate = new Date(document.getElementById('examDate').value);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            examDate.setHours(0, 0, 0, 0);
+            
+            // Calculate remaining days
+            const timeDiff = examDate - today;
+            const daysRemaining = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+            
+            const resultDiv = document.getElementById('result');
+            
+            // Validation
+            if (daysRemaining < 0) {
+                resultDiv.innerHTML = '<div class="error">⚠️ The exam date has already passed. Please select a future date.</div>';
+                resultDiv.classList.add('show');
+                return;
+            }
+            
+            if (daysRemaining === 0) {
+                resultDiv.innerHTML = '<div class="error">⚠️ The exam is today! Good luck! 🍀</div>';
+                resultDiv.classList.add('show');
+                return;
+            }
+            
+            // Generate study plan
+            const studyPlan = generateStudyPlan(daysRemaining);
+            
+            // Display results
+            let html = `
+                <div class="exam-info">
+                    <h2>${examName}</h2>
+                    <p>Exam Date: ${examDate.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
+                    <div class="days-remaining">${daysRemaining} Days Remaining</div>
+                </div>
+                
+                <div class="study-plan">
+                    <h3>Your Personalized Study Plan</h3>
+            `;
+            
+            studyPlan.forEach((day, index) => {
+                const dayClass = day.type === 'rest' ? 'rest-day' : (day.type === 'revision' ? 'revision-day' : '');
+                const typeClass = day.type === 'rest' ? 'rest' : (day.type === 'revision' ? 'revision' : '');
+                
+                html += `
+                    <div class="day-card ${dayClass}">
+                        <div class="day-header">
+                            <span class="day-number">Day ${index + 1}</span>
+                            <span class="day-type ${typeClass}">${day.type.toUpperCase()}</span>
+                        </div>
+                        <ul class="task-list">
+                `;
+                
+                day.tasks.forEach(task => {
+                    html += `<li>${task}</li>`;
+                });
+                
+                html += `
+                        </ul>
+                    </div>
+                `;
+            });
+            
+            html += '</div>';
+            
+            resultDiv.innerHTML = html;
+            resultDiv.classList.add('show');
+            
+            // Smooth scroll to results
+            resultDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        });
+        
+        function generateStudyPlan(totalDays) {
+            const plan = [];
+            
+            // AI logic to create a realistic study plan
+            if (totalDays <= 3) {
+                // Intensive short-term plan
+                for (let i = 0; i < totalDays; i++) {
+                    if (i === totalDays - 1) {
+                        plan.push({
+                            type: 'revision',
+                            tasks: [
+                                'Quick review of all key concepts (2 hours)',
+                                'Practice important formulas and definitions (1 hour)',
+                                'Light revision - avoid cramming (1 hour)',
+                                'Get adequate sleep early'
+                            ]
+                        });
+                    } else {
+                        plan.push({
+                            type: 'study',
+                            tasks: [
+                                'Study core topics - Session 1 (2 hours)',
+                                'Short break (15 minutes)',
+                                'Study core topics - Session 2 (2 hours)',
+                                'Break and light physical activity (30 minutes)',
+                                'Practice problems and review (1.5 hours)',
+                                "Evening review of the day's topics (30 minutes)"
+                            ]
+                        });
+                    }
+                }
+            } else if (totalDays <= 7) {
+                // Week-long plan
+                const revisionDay = totalDays - 1;
+                const restDay = Math.floor(totalDays / 2);
+                
+                for (let i = 0; i < totalDays; i++) {
+                    if (i === revisionDay) {
+                        plan.push({
+                            type: 'revision',
+                            tasks: [
+                                'Review all topics covered (2 hours)',
+                                'Take a full practice test (1.5 hours)',
+                                'Review mistakes and weak areas (1 hour)',
+                                'Final light revision (30 minutes)',
+                                'Relax and prepare mentally'
+                            ]
+                        });
+                    } else if (i === restDay) {
+                        plan.push({
+                            type: 'rest',
+                            tasks: [
+                                'Light review of previous topics (1 hour)',
+                                'Take proper rest and relaxation',
+                                'Physical exercise or outdoor activity',
+                                'Organize study materials for next phase',
+                                'Early sleep for recovery'
+                            ]
+                        });
+                    } else {
+                        const section = Math.floor((i / (totalDays - 2)) * 3) + 1;
+                        plan.push({
+                            type: 'study',
+                            tasks: [
+                                `Study Topic Section ${section} - Part 1 (1.5 hours)`,
+                                'Short break (15 minutes)',
+                                `Study Topic Section ${section} - Part 2 (1.5 hours)`,
+                                'Lunch break (1 hour)',
+                                'Practice exercises and problems (1 hour)',
+                                'Break (20 minutes)',
+                                'Review and make summary notes (45 minutes)',
+                                'Evening revision (30 minutes)'
+                            ]
+                        });
+                    }
+                }
+            } else {
+                // Extended plan (more than a week)
+                const weeksAvailable = Math.floor(totalDays / 7);
+                const extraDays = totalDays % 7;
+                
+                // Calculate rest and revision days
+                const restDays = [];
+                const revisionDays = [];
+                
+                // One rest day per week
+                for (let w = 1; w <= weeksAvailable; w++) {
+                    restDays.push(w * 7 - 1); // Sunday as rest day
+                }
+                
+                // Revision days in last week
+                revisionDays.push(totalDays - 1); // Day before exam
+                if (totalDays > 10) {
+                    revisionDays.push(totalDays - 4); // Mid-week revision
+                }
+                
+                for (let i = 0; i < totalDays; i++) {
+                    if (revisionDays.includes(i)) {
+                        plan.push({
+                            type: 'revision',
+                            tasks: [
+                                'Comprehensive revision of all topics (2 hours)',
+                                'Practice previous exam papers (1.5 hours)',
+                                'Review difficult concepts (1 hour)',
+                                'Create quick reference notes',
+                                'Self-testing and quiz practice'
+                            ]
+                        });
+                    } else if (restDays.includes(i)) {
+                        plan.push({
+                            type: 'rest',
+                            tasks: [
+                                'Light revision only (1 hour maximum)',
+                                'Physical exercise and outdoor activities',
+                                'Hobby time and mental relaxation',
+                                'Organize and review study notes',
+                                'Adequate rest and early sleep'
+                            ]
+                        });
+                    } else {
+                        const weekNum = Math.floor(i / 7) + 1;
+                        const dayInWeek = (i % 7) + 1;
+                        const totalStudySections = Math.max(5, Math.min(12, totalDays - 3));
+                        const section = Math.floor((i / totalDays) * totalStudySections) + 1;
+                        
+                        plan.push({
+                            type: 'study',
+                            tasks: [
+                                `Study Chapter/Unit ${section} - Morning session (2 hours)`,
+                                'Short break and snack (15 minutes)',
+                                `Continue Chapter/Unit ${section} - Deep study (1.5 hours)`,
+                                'Lunch break (1 hour)',
+                                'Practice problems and exercises (1 hour)',
+                                'Break (20 minutes)',
+                                'Make detailed notes and summaries (45 minutes)',
+                                "Evening review of today's learning (30 minutes)",
+                                "Plan tomorrow's topics"
+                            ]
+                        });
+                    }
+                }
+            }
+            
+            return plan;
+        }
+        
+        // Set minimum date to today
+        document.getElementById('examDate').min = new Date().toISOString().split('T')[0];
+    </script>
+</body>
+</html>
