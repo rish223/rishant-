@@ -1,12 +1,29 @@
+// Notification helper
+function showNotification(message, type = 'info') {
+    const notification = document.createElement('div');
+    notification.className = `notification notification-${type}`;
+    notification.textContent = message;
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.classList.add('show');
+    }, 10);
+    
+    setTimeout(() => {
+        notification.classList.remove('show');
+        setTimeout(() => notification.remove(), 300);
+    }, 3000);
+}
+
 // API interaction functions
 async function testAPI() {
     try {
         const response = await fetch('/api/health');
         const data = await response.json();
-        alert(`API Status: ${data.status}\n${data.message}`);
+        showNotification(`API Status: ${data.status} - ${data.message}`, 'success');
         console.log('Health check:', data);
     } catch (error) {
-        alert('Error connecting to API: ' + error.message);
+        showNotification('Error connecting to API: ' + error.message, 'error');
         console.error('API error:', error);
     }
 }
@@ -54,12 +71,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 <pre>${JSON.stringify(result, null, 2)}</pre>
             `;
 
-            // Clear form
-            form.reset();
+            if (result.success) {
+                showNotification('Form submitted successfully!', 'success');
+                // Clear form
+                form.reset();
+            } else {
+                showNotification(result.message || 'Submission failed', 'error');
+            }
         } catch (error) {
             responseBox.innerHTML = `
                 <p style="color: red;">Error: ${error.message}</p>
             `;
+            showNotification('Error submitting form: ' + error.message, 'error');
             console.error('Form submission error:', error);
         }
     });

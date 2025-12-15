@@ -28,12 +28,37 @@ app.get('/api/data', (req, res) => {
 });
 
 app.post('/api/submit', (req, res) => {
-  const data = req.body;
-  console.log('Received data:', data);
+  const { name, email, message } = req.body;
+  
+  // Input validation
+  if (!name || !email || !message) {
+    return res.status(400).json({
+      success: false,
+      message: 'Missing required fields: name, email, and message are required'
+    });
+  }
+  
+  // Basic email validation
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    return res.status(400).json({
+      success: false,
+      message: 'Invalid email format'
+    });
+  }
+  
+  // Sanitize and limit input lengths
+  const sanitizedData = {
+    name: String(name).substring(0, 100),
+    email: String(email).substring(0, 100),
+    message: String(message).substring(0, 1000)
+  };
+  
+  console.log('Received data:', sanitizedData);
   res.json({
     success: true,
     message: 'Data received successfully',
-    received: data
+    received: sanitizedData
   });
 });
 
@@ -44,7 +69,11 @@ app.get('/', (req, res) => {
 
 // 404 handler
 app.use((req, res) => {
-  res.status(404).json({ error: 'Not found' });
+  res.status(404).json({ 
+    error: 'Not found',
+    message: 'The requested endpoint does not exist',
+    availableEndpoints: ['/api/health', '/api/data', '/api/submit']
+  });
 });
 
 // Start server
