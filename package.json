@@ -1,0 +1,24 @@
+{
+  "name": "rishant-webapps",
+  "version": "1.0.0",
+  "description": "Web application platform for building prototypes and AI-related projects",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "test": "echo \"No tests yet\" && exit 0"
+  },
+  "keywords": [
+    "webapp",
+    "prototype",
+    "ai",
+    "express"
+  ],
+  "author": "Rishant",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "express-rate-limit": "^7.1.5"
+  }
+}

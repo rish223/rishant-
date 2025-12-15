@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rishant - Web Apps & Prototypes</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <nav>
+                <div class="logo">Rishant AI</div>
+                <ul class="nav-links">
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#features">Features</a></li>
+                    <li><a href="#demo">Demo</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <section id="home" class="hero">
+            <h1>Build Amazing Web Apps & Prototypes</h1>
+            <p>A modern platform for creating AI-powered web applications and prototypes</p>
+            <button class="cta-button" onclick="testAPI()">Test API Connection</button>
+        </section>
+
+        <section id="features" class="features">
+            <h2>Features</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🚀</div>
+                    <h3>Fast Development</h3>
+                    <p>Quickly build and deploy web applications with modern tools</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🤖</div>
+                    <h3>AI Integration</h3>
+                    <p>Seamlessly integrate AI capabilities into your projects</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📱</div>
+                    <h3>Responsive Design</h3>
+                    <p>Works perfectly on all devices and screen sizes</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>High Performance</h3>
+                    <p>Optimized for speed and efficiency</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="demo" class="demo">
+            <h2>Interactive Demo</h2>
+            <div class="demo-container">
+                <div class="form-section">
+                    <h3>Try it out</h3>
+                    <form id="demoForm">
+                        <input type="text" id="nameInput" placeholder="Enter your name" required>
+                        <input type="email" id="emailInput" placeholder="Enter your email" required>
+                        <textarea id="messageInput" placeholder="Your message" rows="4"></textarea>
+                        <button type="submit">Submit</button>
+                    </form>
+                </div>
+                <div class="response-section">
+                    <h3>API Response</h3>
+                    <div id="apiResponse" class="response-box">
+                        <p>Submit the form to see API response...</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="contact" class="contact">
+            <h2>Get Started</h2>
+            <p>Ready to build your next project?</p>
+            <div class="contact-info">
+                <p>📧 Contact: <a href="mailto:contact@example.com">contact@example.com</a></p>
+                <p>🔗 GitHub: <a href="https://github.com/rish223/rishant-" target="_blank">rish223/rishant-</a></p>
+            </div>
+        </section>
+
+        <footer>
+            <p>&copy; 2024 Rishant AI. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
